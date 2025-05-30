@@ -1,11 +1,11 @@
 -- Copiador visual de skin (Brookhaven compatível)
--- Apenas para testes autorizados
+-- Interface corrigida para funcionar no PlayerGui
 
 local Players = game:GetService("Players")
 local InsertService = game:GetService("InsertService")
 local LocalPlayer = Players.LocalPlayer
 
--- Função para aplicar roupas e acessórios do jogador
+-- Função para aplicar roupas e acessórios
 local function applySkinVisual(username)
     local success, userId = pcall(function()
         return Players:GetUserIdFromNameAsync(username)
@@ -29,9 +29,9 @@ local function applySkinVisual(username)
     local humanoid = character:FindFirstChildOfClass("Humanoid")
 
     if humanoid then
-        -- Aplicar roupas
         humanoid:RemoveAccessories()
 
+        -- Escalas (opcional)
         humanoid.HipHeight = desc.HipHeight or 2
         humanoid.BodyTypeScale = desc.BodyTypeScale
         humanoid.DepthScale = desc.DepthScale
@@ -40,9 +40,12 @@ local function applySkinVisual(username)
         humanoid.ProportionScale = desc.ProportionScale
         humanoid.WidthScale = desc.WidthScale
 
-        -- Aplicar roupas
-        humanoid:FindFirstChildOfClass("Shirt")?.Destroy()
-        humanoid:FindFirstChildOfClass("Pants")?.Destroy()
+        -- Roupas
+        for _, obj in pairs(character:GetChildren()) do
+            if obj:IsA("Shirt") or obj:IsA("Pants") then
+                obj:Destroy()
+            end
+        end
 
         local shirt = Instance.new("Shirt")
         shirt.ShirtTemplate = "rbxassetid://" .. desc.Shirt
@@ -85,9 +88,11 @@ local function applySkinVisual(username)
     end
 end
 
--- Interface simples preta/vermelha para input
-local Gui = Instance.new("ScreenGui", game.CoreGui)
+-- Interface corrigida (inserida no PlayerGui)
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local Gui = Instance.new("ScreenGui", PlayerGui)
 Gui.Name = "SkinVisualUI"
+Gui.ResetOnSpawn = false
 
 local Frame = Instance.new("Frame", Gui)
 Frame.Size = UDim2.new(0, 300, 0, 150)
